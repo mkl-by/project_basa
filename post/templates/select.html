@@ -1,0 +1,33 @@
+{% extends 'home.html' %}
+{% load static %}
+{% block content %}
+
+<div class="navbar navbar-default" align="center">
+        <div class="row" >
+          <div class="col-md-push-6" class="navbar-brand">
+              <H2 >Отфильтруйте по необходимости</H2>
+          </div>
+        </div>
+    </div>
+
+
+
+
+
+<div>
+    <form action="select1" method="post">
+        {% csrf_token %}
+        <table>
+            {{ form_ser }}
+            {{ form_number }}
+            {{ form_invoice }}
+            {{ form_invoice_data }}
+            {{ form_location }}
+            {{ form_locations }}
+        </table>
+        <input type="submit" value="Submit">
+    </form>
+    </form>
+</div>
+
+{% endblock %}
