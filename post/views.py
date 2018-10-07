@@ -5,71 +5,138 @@ from django.views.generic.list import ListView
 from django.db.models import Count
 from .forms import GoodForm, SelectForm
 
-# class Home(TemplateView):
-#    template_name = "home.html"
-
-'''
-class Bootton(ListView):
-    template_name = 'bootton.html'
-    queryset = Post.objects.values('product_number').annotate(dcount=Count('product_number'))
-    context_object_name='number_product'
-'''
-
-
 def Boott(request):
     form = GoodForm()
-
     return render(request, 'bootton.html', {'form': form})
 
-
+#-----------------------выборка по технике и отображение-------------------------------------------------------
 def Select_val(request):
     if request.method == "POST":
         req = request.POST
 
         if request.POST:
-            doc = Post.objects.filter(doc_name__doc_n=req['doc_name__doc_n'], del_elem=True)
-            print(doc)
-            data = doc.values_list('doc_name__post__product_number', flat=True)
 
-            # """-----------------------------------Выборка по технике-----------------------------------------"""
-            tech = Post.objects.filter(tech_name__tech_n=req['tech_name__tech_n'])
-            tech1 = tech.values_list('product_number', flat=True).annotate(ddd=Count('product_number'))  # номер
-            tech2 = tuple(zip(tech1, tech1))
-            form_number = SelectForm(choices=(tech2), label_suffix='техника')
+            pole1 = Post.objects.filter(doc_name__doc_n=req['doc_name__doc_n'], del_elem=True)
+            pole2 = Post.objects.filter(tech_name__tech_n=req['tech_name__tech_n'], del_elem=True)
+            pole3 = Post.objects.filter(opis_name__opis_n=req['opis_name__opis_n'], del_elem=True)
 
-            tech_ser = tech.values_list('ser_name__ser', flat=True).annotate(ddd=Count('ser_name__ser'))  # серийник
-            tech_ser = tuple(zip(tech_ser, tech_ser))
-            form_ser = SelectForm(choices=tech_ser, label_suffix='серийник')
+            # """-----------------------------------Вывод данных в форму-----------------------------------------"""
+            def visualisation_form(pole):
 
-            invoice_num = tech.values_list('invoice_number', flat=True).annotate(
-                ddd=Count('invoice_number'))  # № получения
-            invoice_num = tuple(zip(invoice_num, invoice_num))
-            form_invoice = SelectForm(choices=invoice_num, label_suffix='№ получения ')
+                def data_transformations(data_tr):  # переворачиваем дату
+                    w = []
+                    for i in data_tr:
+                        if i:
+                            w.append(i.strftime('%d-%m-%Y'))
+                    return w
 
-            invoice_data = tech.values_list('data_invoice', flat=True).annotate(
-                ddd=Count('data_invoice'))  # дата получения
+                def location_val(locations): #достаем значения из локаций
+                    w = []
+                    s = Post.LOCATIONS
+                    for i in locations:
+                        for ii in range(len(s)):
+                            if s[ii][0] == i:
+                                w.append(s[ii][1])
+                    return w
 
-            w = []
-            for i in invoice_data:
-                w.append(i.strftime('%d-%m-%Y'))
+                form=[]
+                label_suf=['номер', 'серийник','№ получения','дата получения', 'Местонахождение', 'Номер отправки', 'Дата отправки']
+                pole_name=('product_number', 'ser_name__ser', 'invoice_number', 'data_invoice', 'location', 'sending_number', 'data_sending')
+                form_inicial={'form_ser': 1,
+                                           'form_number': 0,
+                                           'form_invoice': 2,
+                                           'form_invoice_data': 3,
+                                           'form_locations': 4,
+                                           'form_sending': 5,
+                                           'form_sending_data': 6}
 
-            invoice_data = tuple(zip(invoice_data, w))
-            form_invoice_data = SelectForm(choices=invoice_data, label_suffix='Дата получения ')
+                for key in form_inicial.keys():
 
-            locations = tech.values_list('location', flat=True).annotate(ddd=Count('location'))  # Местонахождение
-            w = []
-            s = Post.LOCATIONS
-            for i in locations:
-                for ii in range(len(s)):
-                    if s[ii][0] == i:
-                        w.append(s[ii][1])
+                    tech1 = pole.values_list(pole_name[form_inicial[key]], flat=True).\
+                        annotate(ddd=Count(pole_name[form_inicial[key]])).order_by(pole_name[form_inicial[key]])
 
-            locat = tuple(zip(locations, w))
-            form_locations = SelectForm(choices=locat, label_suffix='Место нахождения ')
+                    if key=='form_locations':
+                        tech2 = tuple(zip(tech1, location_val(tech1)))
 
-    return render(request, 'select.html', {'form_ser': form_ser, 'form_number': form_number,
-                                           'form_invoice': form_invoice, 'form_invoice_data': form_invoice_data,
-                                           'form_locations': form_locations})
+                    elif (key=='form_invoice_data' or key=='form_sending_data'):
+                        tech2 = tuple(zip(tech1, data_transformations(tech1)))
+
+                    else:
+                        tech2 = tuple(zip(tech1, tech1))
+
+                    form_inicial[key]=SelectForm(choices=tech2, label_suffix=label_suf[form_inicial[key]])
+
+
+                return form_inicial
+
+    form_form={}
+
+    form_in = {'form_ser': "",
+                    'form_number': "",
+                    'form_invoice': "",
+                    'form_invoice_data': "",
+                    'form_locations': "",
+                    'form_sending': "",
+                    'form_sending_data': ""}
+
+    for index, value in enumerate([pole1, pole2, pole3]): #вывод данных в поле
+        form = visualisation_form(value)
+        for key in form_in.keys():
+            form_form[key+str(index)]=form[key]
+
+    return render(request, 'select.html', form_form)
+
+#----------------------ведомость наличия как положено------------------------------------------------------------------
+
+def VedomNal(request):
+
+    from post.funcion_user import Krasiv_vivod
+    qqq=[]
+    for i_tech in TechPost.objects.select_related('tech_n__tech_name').values():
+        for i_ser in SerPost.objects.select_related('ser__tech_n').values():
+            queri=Post.objects.filter(tech_name__tech_n=i_tech['tech_n'], ser_name_id=i_ser['id'])
+            if queri.count()==0:
+                continue
+            qqq.append([i_tech['tech_n'], i_ser['ser']])
+
+    print(Krasiv_vivod(qqq))
+    data=Krasiv_vivod(qqq)
+    # s=Vedomosti()
+    # s.get_context_data(Krasiv_vivod(qqq))
+
+    return render(request, 'vedomost.html', {'aa' : data})
+
+
+            #qww[i_tech['tech_n']]  =  i_ser['ser']
+            #qqq.append(i_ser['ser'])
+
+
+            # if i_tech['tech_n'] in qww.keys():
+            #     qww[(i_tech['tech_n'])]=qqq
+            # else:
+            #     qqq = []
+            #     qww[(i_tech['tech_n'])] =
+
+                    #qww[i_tech['tech_n']] = qqq.append((i_ser['ser']))
+
+
+#----------------------ведомость наличия--------------------------------------------------------------------------------
+# class Vedomosti(TemplateView):
+#     model = Post
+#     template_name = 'vedomost.html'
+#     paginate_by = 30
+#     #a = Post.objects.all().filter(del_elem=True).annotate(ddd=Count('product_number')).order_by()
+#     #print('------------------->', VedomNal())
+#     def get_context_data(self, **kwargs):
+#         context = ({
+#            'a' : self.kwargs,
+#         })
+#         return context
+
+
+
+
+
 
 
 def SS(request):

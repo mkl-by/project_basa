@@ -33,13 +33,11 @@ class GoodForm(forms.ModelForm):
 
 class SelectForm(forms.Form):
     """форма получает сет и во вьюшке, переопределен параметр choices"""
-    element = forms.ChoiceField(label=" ")
+    element = forms.ChoiceField(label=" ", required=False)
 
 
     def __init__(self, *args, **kwargs):
-        print(kwargs)
         choices=kwargs.pop('choices')
-
         super(SelectForm, self).__init__(*args, **kwargs)
         if choices:
             self.fields['element'].choices=choices
@@ -48,4 +46,5 @@ class SelectForm(forms.Form):
 
 
 
+   # self.clean()
 

@@ -9,25 +9,68 @@
           </div>
         </div>
     </div>
-
-
-
-
-
-<div>
-    <form action="select1" method="post">
-        {% csrf_token %}
-        <table>
-            {{ form_ser }}
-            {{ form_number }}
-            {{ form_invoice }}
-            {{ form_invoice_data }}
-            {{ form_location }}
-            {{ form_locations }}
-        </table>
-        <input type="submit" value="Submit">
-    </form>
-    </form>
+<div class="row">
+    <div class="col-xs-6 col-md-4"><H4>Документы</H4></div>
+    <div class="col-xs-6 col-md-4"><H4>Техника</H4></div>
+    <div class="col-xs-6 col-md-4"><H4>Техническое описание</H4></div>
 </div>
+    <p></p>
+
+    <div class="row">
+
+        <div class="col-xs-6 col-md-4">
+            <form action="select1" method="post">
+                {% csrf_token %}
+                <table>
+                    {{ form_ser0 }}
+                    {{form_number0}}
+                    {{form_invoice0}}
+                    {{form_invoice_data0}}
+                    {{form_location0}}
+                    {{form_locations0}}
+                    {{form_sending0}}
+                    {{form_sending_data0}}
+                </table>
+                <input type="submit" value="Фильтровать">
+            </form>
+
+        </div>
+
+        <div class="col-xs-6 col-md-4">
+            <form action="select1" method="post">
+                {% csrf_token %}
+                <table>
+                    {{ form_ser1 }}
+                    {{form_number1}}
+                    {{form_invoice1}}
+                    {{form_invoice_data1}}
+                    {{form_location1}}
+                    {{form_locations1}}
+                    {{form_sending1}}
+                    {{form_sending_data1}}
+                </table>
+            <input type="submit" value="Фильтровать">
+            </form>
+        </div>
+
+
+        <div class="col-xs-6 col-md-4">
+            <form action="select1" method="post">
+                {% csrf_token %}
+                <table>
+                    {{ form_ser2 }}
+                    {{form_number2}}
+                    {{form_invoice2}}
+                    {{form_invoice_data2}}
+                    {{form_location2}}
+                    {{form_locations2}}
+                    {{form_sending2}}
+                    {{form_sending_data2}}
+                </table>
+                <input type="submit" value="Фильтровать">
+            </form>
+        </div>
+    </div>
+
     <p></p>
 {% endblock %}

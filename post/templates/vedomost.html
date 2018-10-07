@@ -2,18 +2,34 @@
 {% load static %}
 {% block content %}
 
-<div class="navbar navbar-default" align="center">
+<div class="navbar navbar-default " align="center">
         <div class="row" >
-          <div class="col-md-push-6" class="navbar-brand">
-              <H2 >ОГО</H2>
+          <div class="col-md-push-6 " class="navbar-brand ">
+              <H2 >ВЕДОМОСТЬ НАЛИЧИЯ</H2>
           </div>
         </div>
     </div>
 
-    
+<div class="row">
+  <div class="col-xs-4 col-md-3">№ п/п </div>
+  <div class="col-xs-4 col-md-3">Наименование</div>
+  <div class="col-xs-4 col-md-3">Серия</div>
+  <div class="col-xs-4 col-md-3">Номер</div>
 
+</div>
 
-
+    <table class="table table-hover">
+        {% for i in aa %}
+            <tr class="active">
+                <td>
+                    <div class="col-xs-4 col-md-3">{{ i.id }}</div>
+                    <div class="col-xs-4 col-md-3"> {{ i.name }} </div>
+                    <div class="col-xs-4 col-md-3"> {{ i.stroka }} </div>
+{#                    <div class="col-xs-4 col-md-3"> {{ i.product_number }} </div>#}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
 
 
 
