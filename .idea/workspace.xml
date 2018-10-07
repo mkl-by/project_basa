@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="875e276f-f3b8-4d9b-bd8d-d1f480c67632" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="875e276f-f3b8-4d9b-bd8d-d1f480c67632" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/.idea/shelf/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -211,7 +208,7 @@
             <path>
               <item name="basa1" type="b2602c69:ProjectViewProjectNode" />
               <item name="basa1" type="462c0819:PsiDirectoryNode" />
-              <item name="basa1" type="462c0819:PsiDirectoryNode" />
+              <item name="post" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -390,6 +387,8 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
       <path value="$PROJECT_DIR$/baza" />
+      <path value="$PROJECT_DIR$/Basa-project" />
+      <path value="$PROJECT_DIR$/basa" />
     </ignored-roots>
     <MESSAGE value="1" />
     <MESSAGE value="2" />
