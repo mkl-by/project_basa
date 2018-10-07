@@ -2,17 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="875e276f-f3b8-4d9b-bd8d-d1f480c67632" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/post/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post/funcion_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/post/funcion_user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post/templates/bootton.html" beforeDir="false" afterPath="$PROJECT_DIR$/post/templates/bootton.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post/templates/select.html" beforeDir="false" afterPath="$PROJECT_DIR$/post/templates/select.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post/templates/select1.html" beforeDir="false" afterPath="$PROJECT_DIR$/post/templates/select1.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post/templates/vedomost.html" beforeDir="false" afterPath="$PROJECT_DIR$/post/templates/vedomost.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/post/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/post/views.py" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.idea/shelf/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
