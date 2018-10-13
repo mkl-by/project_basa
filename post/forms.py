@@ -5,6 +5,8 @@ from django.db.models import Count
 class GoodForm(forms.ModelForm):
 
 
+#------------------------------ форма выбора техники или документации или документов------------------------------------
+
         #queryset1 = Post.objects.values(fieldss).annotate(dcount=Count(fieldss)).values_list(fieldss, flat=True).order_by(fieldss)
     # values_list('product_number', flat=True).order_by('product_number') достаем кортеж и если флат=тру, возвращаем единственное значение
     # Post.objects.values('product_number').annotate(dcount=Count('product_number')) достаем номера в единственном экземпляре
@@ -30,7 +32,7 @@ class GoodForm(forms.ModelForm):
         fields=('doc_name__doc_n', 'tech_name__tech_n', 'opis_name__opis_n' )
 
 
-
+#---------------------------------- форма выбора любого элемента--------------------------------------------------------
 class SelectForm(forms.Form):
     """форма получает сет и во вьюшке, переопределен параметр choices"""
     element = forms.ChoiceField(label=" ", required=False)
@@ -43,8 +45,7 @@ class SelectForm(forms.Form):
             self.fields['element'].choices=choices
 
 
+#--------------------------------форма ввода ---------------------------------------------------------------------------
+class DataForm(forms.Form):
 
-
-
-   # self.clean()
 

@@ -4,12 +4,12 @@ from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 from django.db.models import Count
 from .forms import GoodForm, SelectForm
-
+#------------------------вывод формы на главную страницу----------------------------------------------------------------
 def Boott(request):
     form = GoodForm()
     return render(request, 'bootton.html', {'form': form})
 
-#-----------------------выборка по технике и отображение-------------------------------------------------------
+#-----------------------выборка по технике и отображение----------------------------------------------------------------
 def Select_val(request):
     if request.method == "POST":
         req = request.POST
@@ -22,23 +22,7 @@ def Select_val(request):
 
             # """-----------------------------------Вывод данных в форму-----------------------------------------"""
             def visualisation_form(pole):
-
-                def data_transformations(data_tr):  # переворачиваем дату
-                    w = []
-                    for i in data_tr:
-                        if i:
-                            w.append(i.strftime('%d-%m-%Y'))
-                    return w
-
-                def location_val(locations): #достаем значения из локаций
-                    w = []
-                    s = Post.LOCATIONS
-                    for i in locations:
-                        for ii in range(len(s)):
-                            if s[ii][0] == i:
-                                w.append(s[ii][1])
-                    return w
-
+                from post.funcion_user import data_transformations, location_val
                 form=[]
                 label_suf=['номер', 'серийник','№ получения','дата получения', 'Местонахождение', 'Номер отправки', 'Дата отправки']
                 pole_name=('product_number', 'ser_name__ser', 'invoice_number', 'data_invoice', 'location', 'sending_number', 'data_sending')
@@ -92,46 +76,28 @@ def VedomNal(request):
 
     from post.funcion_user import Krasiv_vivod
     qqq=[]
-    for i_tech in TechPost.objects.select_related('tech_n__tech_name').values():
-        for i_ser in SerPost.objects.select_related('ser__tech_n').values():
-            queri=Post.objects.filter(tech_name__tech_n=i_tech['tech_n'], ser_name_id=i_ser['id'])
-            if queri.count()==0:
-                continue
-            qqq.append([i_tech['tech_n'], i_ser['ser']])
+    qwe=[]
+    for podstanovka in [['doc_name__doc_n', 'ser__doc_n', 'doc_n', DocPost],
+                    ['tech_name__tech_n', 'ser__tech_n', 'tech_n', TechPost],
+                    ['opis_name__opis_n',  'ser__opis_n', 'opis_n', OpisPost]]:
 
-    print(Krasiv_vivod(qqq))
-    data=Krasiv_vivod(qqq)
-    # s=Vedomosti()
-    # s.get_context_data(Krasiv_vivod(qqq))
+        viborka=Post.objects.values(podstanovka[0],'ser_name__ser','product_number').order_by('doc_name__doc_n', 'tech_name__tech_n', 'opis_name__opis_n')
+
+        if podstanovka[0] == 'doc_name__doc_n':
+            viborka = viborka.exclude(doc_name__doc_n=None)
+        elif podstanovka[0] == 'tech_name__tech_n':
+            viborka = viborka.exclude(tech_name__tech_n=None)
+        elif podstanovka[0] == 'opis_name__opis_n':
+            viborka = viborka.exclude(opis_name__opis_n=None)
+
+        for i in range(viborka.count()):
+            qwe.append(list(viborka[i].values()))
+
+    data = Krasiv_vivod(qwe)
 
     return render(request, 'vedomost.html', {'aa' : data})
 
-
-            #qww[i_tech['tech_n']]  =  i_ser['ser']
-            #qqq.append(i_ser['ser'])
-
-
-            # if i_tech['tech_n'] in qww.keys():
-            #     qww[(i_tech['tech_n'])]=qqq
-            # else:
-            #     qqq = []
-            #     qww[(i_tech['tech_n'])] =
-
-                    #qww[i_tech['tech_n']] = qqq.append((i_ser['ser']))
-
-
-#----------------------ведомость наличия--------------------------------------------------------------------------------
-# class Vedomosti(TemplateView):
-#     model = Post
-#     template_name = 'vedomost.html'
-#     paginate_by = 30
-#     #a = Post.objects.all().filter(del_elem=True).annotate(ddd=Count('product_number')).order_by()
-#     #print('------------------->', VedomNal())
-#     def get_context_data(self, **kwargs):
-#         context = ({
-#            'a' : self.kwargs,
-#         })
-#         return context
+#-----------------------------ввод данных в базу------------------------------------------------------------------------
 
 
 
