@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from .models import Post, TechPost, DocPost, OpisPost, SerPost
-from django.views.generic.base import TemplateView
+from django.views.generic.base import TemplateView, View, TemplateResponseMixin
 from django.views.generic.list import ListView
 from django.db.models import Count
-from .forms import GoodForm, SelectForm
+from .forms import GoodForm, SelectForm, DataForm_doc
 #------------------------вывод формы на главную страницу----------------------------------------------------------------
 def Boott(request):
     form = GoodForm()
@@ -99,8 +99,32 @@ def VedomNal(request):
 
 #-----------------------------ввод данных в базу------------------------------------------------------------------------
 
+def Data_input(request, idd):
+    print (request.GET, idd)
+    if idd==0:
+        return render(request, 'data_input.html')
+    else:
+        return render(request, 'data_input.html')
 
+class Form_input(TemplateView):
+    import datetime
+    dat=datetime.datetime.now()
+    data=dat.strftime("%d-%m-%Y")
+    form=None
+    template_name = 'form_input.html'
 
+    def get(self, request, *args, **kwargs):
+        self.form=DataForm_doc(initial={'doc_n': 'наименование документа',
+                                        'ser': 'серийный номер',
+                                        'product_number': 'номер документа',
+                                        'invoice_number': 'номер получения',
+                                        'data_invoice': self.data})
+        return super(Form_input, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context=super(Form_input,self).get_context_data(**kwargs)
+        context['form']=self.form
+        return context
 
 
 

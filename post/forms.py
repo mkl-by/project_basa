@@ -14,7 +14,7 @@ class GoodForm(forms.ModelForm):
 
     doc_name__doc_n=forms.ModelChoiceField( queryset = Post.objects.values('doc_name__doc_n').
                                             annotate(dcount=Count('doc_name__doc_n')).
-                                            values_list('doc_name__doc_n', flat=True).
+                                            values_list('doc_name__doc_n',flat=True).
                                             order_by('doc_name__doc_n'), widget=forms.Select, label='Документы')  # создаем поле
 
     tech_name__tech_n=forms.ModelChoiceField(queryset = Post.objects.values('tech_name__tech_n').
@@ -46,6 +46,12 @@ class SelectForm(forms.Form):
 
 
 #--------------------------------форма ввода ---------------------------------------------------------------------------
-class DataForm(forms.Form):
+class DataForm_doc(forms.ModelForm):
+    doc_n = forms.CharField(max_length=20)
+    ser = forms.CharField(max_length=10)
+
+    class Meta:
+        model=Post
+        fields = ('product_number', 'invoice_number', 'data_invoice', 'whom')
 
 
