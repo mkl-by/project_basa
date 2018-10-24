@@ -18,12 +18,12 @@
   <body>
     <nav class="navbar navbar-default" role="navigation">
         <div class="container">
-            <a href="#" class="navbar-brand">My posts {{ user.username }}</a>
+            <a href="/basa" class="navbar-brand">My posts {{ user.username }}</a>
             <p class="glyphicon glyphicon-user navbar-text navbar-right">UserProfile</p>
         </div>
     </nav>
-    <body>
 
+    </head>
     <p></p>
     <!-- Поле с именами колонок-->
 
@@ -41,6 +41,7 @@
        {% endblock %}
   </div>
     <div class="container">
+        {% csrf_token %}
        {% block content1 %}
        {% endblock %}
   </div>
@@ -50,7 +51,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!-- Включают все скомпилированные плагины (ниже), или включать отдельные файлы по мере необходимости -->
     <script src="js/bootstrap.min.js"></script>
-
 
 
   </body>

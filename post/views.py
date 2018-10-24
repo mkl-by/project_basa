@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Post, TechPost, DocPost, OpisPost, SerPost
+from django.views.generic.edit import CreateView
 from django.views.generic.base import TemplateView, View, TemplateResponseMixin
 from django.views.generic.list import ListView
 from django.db.models import Count
@@ -75,13 +76,14 @@ def Select_val(request):
 def VedomNal(request):
 
     from post.funcion_user import Krasiv_vivod
-    qqq=[]
+
     qwe=[]
     for podstanovka in [['doc_name__doc_n', 'ser__doc_n', 'doc_n', DocPost],
                     ['tech_name__tech_n', 'ser__tech_n', 'tech_n', TechPost],
                     ['opis_name__opis_n',  'ser__opis_n', 'opis_n', OpisPost]]:
 
-        viborka=Post.objects.values(podstanovka[0],'ser_name__ser','product_number').order_by('doc_name__doc_n', 'tech_name__tech_n', 'opis_name__opis_n')
+        viborka = Post.objects.values(podstanovka[0], 'ser_name__ser', 'product_number'). \
+            order_by('doc_name__doc_n', 'tech_name__tech_n', 'opis_name__opis_n')
 
         if podstanovka[0] == 'doc_name__doc_n':
             viborka = viborka.exclude(doc_name__doc_n=None)
@@ -97,37 +99,77 @@ def VedomNal(request):
 
     return render(request, 'vedomost.html', {'aa' : data})
 
-#-----------------------------ввод данных в базу------------------------------------------------------------------------
+
+# -----------------------------выбор добавить данные или ------------------------------------------------------------------------
 
 def Data_input(request, idd):
-    print (request.GET, idd)
-    if idd==0:
-        return render(request, 'data_input.html')
-    else:
-        return render(request, 'data_input.html')
+    return render(request, 'data_input.html')
+
+
+#-------------------------------------ввод данных-----------------------------------------------------------------------
 
 class Form_input(TemplateView):
+
     import datetime
-    dat=datetime.datetime.now()
-    data=dat.strftime("%d-%m-%Y")
-    form=None
+    data = datetime.datetime.now()
+    #data=dat.strftime("%Y-%m-%d")
     template_name = 'form_input.html'
 
+
     def get(self, request, *args, **kwargs):
-        self.form=DataForm_doc(initial={'doc_n': 'наименование документа',
-                                        'ser': 'серийный номер',
-                                        'product_number': 'номер документа',
-                                        'invoice_number': 'номер получения',
-                                        'data_invoice': self.data})
+
+        if request.method == 'GET' and request.GET.get('product_number', False):
+            poss = Post()
+            serr = SerPost()
+            poss.product_number = request.GET['product_number']
+            poss.invoice_number = request.GET['invoice_number']
+            poss.data_invoice = request.GET['data_invoice']
+            poss.whom = request.GET['whom']
+            poss.save()
+            serr.ser = request.GET['ser']
+            serr.save()
+            serr.post_set.add(poss)
+
+            if kwargs['idd'] == '0':
+                doc = DocPost()
+                doc.doc_n = request.GET['doc_n']
+                doc.save()
+                doc.post_set.add(poss)
+
+            if kwargs['idd'] == '1':
+                tech = TechPost()
+                tech.tech_n = request.GET['doc_n']
+                tech.save()
+                tech.post_set.add(poss)
+
+            if kwargs['idd'] == '2':
+                opis = OpisPost()
+                opis.opis_n = request.GET['doc_n']
+                opis.save()
+                opis.post_set.add(poss)
+
         return super(Form_input, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
+        self.form = DataForm_doc(initial={'doc_n': 'наименование документа',
+                                          'ser': 'серийный номер',
+                                          'product_number': 'номер документа',
+                                          'invoice_number': 'номер получения',
+                                          'data_invoice': self.data})
         context=super(Form_input,self).get_context_data(**kwargs)
         context['form']=self.form
         return context
 
 
+# -----------------------------------------удаление данных----------------------------------------------------
+class DataDel(TemplateView):
+    template_name = 'data_del.html'
 
+    def get_context_data(self, **kwargs):
+        self.form = GoodForm()
+        context = super(DataDel, self).get_context_data(**kwargs)
+        context['form'] = self.form
+        return context
 
 def SS(request):
     pass

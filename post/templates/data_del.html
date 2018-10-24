@@ -1,0 +1,26 @@
+{% extends 'home.html' %}
+{% load static %}
+{% block content %}
+
+    <div class="navbar navbar-default" align="center">
+        <div class="row">
+            <div class="col-md-push-6" class="navbar-brand">
+                <H2>удаление элементов</H2>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-4" align="center">документы</div>
+        <div class="col-md-4" align="center">техника</div>
+        <div class="col-md-4" align="center">техническое описание</div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4" align="center">{{ form.doc_name__doc_n }}</div>
+        <div class="col-md-4" align="center">{{ form.tech_name__tech_n }}</div>
+        <div class="col-md-4" align="center">{{ form.opis_name__opis_n }}</div>
+    </div>
+
+{% endblock %}

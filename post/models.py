@@ -88,5 +88,4 @@ class AdminPost(admin.ModelAdmin):
                     'location',
                     'del_elem',
                     'data_sending',
-                    ]
-
+                    'whom', ]

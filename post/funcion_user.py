@@ -77,3 +77,5 @@ def Krasiv_vivod(listic):
     name_n.append({'id': i, 'name': one, 'serija': duo, 'number': stroka})
 
     return name_n
+
+# -----------------------------------------достаем данные из реквеста----------------------------------------------------
