@@ -30,7 +30,7 @@ class GoodForm(forms.ModelForm):
     class Meta:
         model=Post
         fields=('doc_name__doc_n', 'tech_name__tech_n', 'opis_name__opis_n' )
-
+        required = False
 
 #---------------------------------- форма выбора любого элемента--------------------------------------------------------
 class SelectForm(forms.Form):
@@ -54,4 +54,4 @@ class DataForm_doc(forms.ModelForm):
         model=Post
         fields = ('product_number', 'invoice_number', 'data_invoice', 'whom')
 
-
+# --------------------------------форма удаления ---------------------------------------------------------------------------

@@ -19,10 +19,10 @@ Including another URLconf
 
 urlpatterns = [path('', views.Boott, name='boott'),
                path('select', views.Select_val, name='select_val'),
-               path('select1', views.SS, name='SS'),
+
                path('vedomost', views.VedomNal, name='vedom_nal'),
                re_path(r'^data_input/(?P<idd>\d+)/$', views.Data_input, name='data_input'),
                re_path(r'^data_input/0/(?P<idd>\d+)/$', views.Form_input.as_view(), name='form_input'),
                path('data_del', views.DataDel.as_view(), name='datadel'),
-
+               # path('data_del/<iss:iss>/', views.DataDel.as_view(), name='datadel'),
                ]

@@ -165,12 +165,29 @@ class Form_input(TemplateView):
 class DataDel(TemplateView):
     template_name = 'data_del.html'
 
+    def get(self, request, *args, **kwargs):
+        if request.GET:
+            print('-----------> requestGET=', request.GET)
+            print('----------->', kwargs, '---', )
+            print(request.GET['element'])
+            ss = SelectForm(choices=tuple(['aa', request.GET['element']]))
+            print(ss)
+            return render(self.template_name, {'form': '1'})
+        else:
+
+            return super(DataDel, self).get(request, *args, **kwargs)
+
+
+
     def get_context_data(self, **kwargs):
-        self.form = GoodForm()
+        self.form = SelectForm(
+            choices=tuple(set([x.popitem() for x in Post.objects.all().values('tech_name__tech_n')])))
         context = super(DataDel, self).get_context_data(**kwargs)
         context['form'] = self.form
         return context
+#
 
-def SS(request):
-    pass
+
+
+
     # print('aaaaaaaaaaaaaaa', request.POST['element'])
