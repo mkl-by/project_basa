@@ -181,13 +181,16 @@ class DataDel(TemplateView):
 
     def get_context_data(self, **kwargs):
         self.form = SelectForm(
-            choices=tuple(set([x.popitem() for x in Post.objects.all().values('tech_name__tech_n')])))
+            choices=tuple(set([(x['tech_name__tech_n'], x['tech_name__tech_n']) for x in
+                               Post.objects.all().values('tech_name__tech_n')])))
+        print(tuple(set([(x['tech_name__tech_n'], x['tech_name__tech_n']) for x in
+                         Post.objects.all().values('tech_name__tech_n')])))
         context = super(DataDel, self).get_context_data(**kwargs)
         context['form'] = self.form
         return context
-#
 
 
 
 
-    # print('aaaaaaaaaaaaaaa', request.POST['element'])
+
+        # print('aaaaaaaaaaaaaaa', request.POST['element'])
