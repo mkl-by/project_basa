@@ -4,7 +4,7 @@ from django.views.generic.edit import CreateView
 from django.views.generic.base import TemplateView, View, TemplateResponseMixin
 from django.views.generic.list import ListView
 from django.db.models import Count
-from .forms import GoodForm, SelectForm, DataForm_doc
+from .forms import GoodForm, SelectForm, DataForm_doc, SelectForma
 #------------------------вывод формы на главную страницу----------------------------------------------------------------
 def Boott(request):
     form = GoodForm()
@@ -167,14 +167,14 @@ class DataDel(TemplateView):
 
     def get(self, request, *args, **kwargs):
         if request.GET:
-            print('-----------> requestGET=', request.GET)
-            print('----------->', kwargs, '---', )
-            print(request.GET['element'])
-            ss = SelectForm(choices=tuple(['aa', request.GET['element']]))
-            print(ss)
-            return render(self.template_name, {'form': '1'})
-        else:
 
+            print(request.GET['element'])
+            sas = SelectForma()
+            print('-------------------------------', sas)
+            sas.fields['form'].queryset = Post.objects.filter(tech_name__tech_n=request.GET['element'])
+            print('-------------------------------')
+            return render(request, 'data_del.html', {'formm': request.GET['element']})
+        else:
             return super(DataDel, self).get(request, *args, **kwargs)
 
 
@@ -183,8 +183,7 @@ class DataDel(TemplateView):
         self.form = SelectForm(
             choices=tuple(set([(x['tech_name__tech_n'], x['tech_name__tech_n']) for x in
                                Post.objects.all().values('tech_name__tech_n')])))
-        print(tuple(set([(x['tech_name__tech_n'], x['tech_name__tech_n']) for x in
-                         Post.objects.all().values('tech_name__tech_n')])))
+
         context = super(DataDel, self).get_context_data(**kwargs)
         context['form'] = self.form
         return context

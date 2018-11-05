@@ -54,4 +54,8 @@ class DataForm_doc(forms.ModelForm):
         model=Post
         fields = ('product_number', 'invoice_number', 'data_invoice', 'whom')
 
-# --------------------------------форма удаления ---------------------------------------------------------------------------
+
+# --------------------------------форма  удаления ---------------------------------------------------------------------------
+class SelectForma(forms.Form):
+    """форма получает сет и во вьюшке, переопределен параметр choices"""
+    form = forms.ModelChoiceField(queryset=Post.objects.none())

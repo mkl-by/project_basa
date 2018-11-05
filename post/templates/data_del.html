@@ -22,12 +22,12 @@
         <form action="{% url "datadel" %}" method="get">
             {% csrf_token %}
             <div class="col-md-4" align="center">{{ form.element }}</div>
-            <div class="col-md-4" align="center">{{ form.tech_name__tech_n }}</div>
+            <div class="col-md-4" align="center">{{ form.hg }}</div>
             <div class="col-md-4" align="center">{{ form.opis_name__opis_n }}</div>
             <div class="col-md-4" align="center">
                 <input type="submit" value="Выбрать">
             </div>
         </form>
     </div>
-
+    <h1>{{ formm }}</h1>
 {% endblock %}
