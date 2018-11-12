@@ -166,14 +166,19 @@ class DataDel(TemplateView):
     template_name = 'data_del.html'
 
     def get(self, request, *args, **kwargs):
-        if request.GET:
-
-            print(request.GET['element'])
+        if request.GET and request.GET.get('element'):
+            print('--------------------------------', request.GET.get('element'))
             sas = SelectForma()
-            print('-------------------------------', sas)
-            sas.fields['form'].queryset = Post.objects.filter(tech_name__tech_n=request.GET['element'])
-            print('-------------------------------')
-            return render(request, 'data_del.html', {'formm': request.GET['element']})
+
+            sas.fields['form'].queryset = Post.objects.filter(tech_name__tech_n=request.GET['element'], del_elem=True). \
+                values_list('ser_name__ser', 'product_number').order_by('ser_name__ser')
+
+            return render(request, 'data_del.html', {'formm': sas})
+
+        elif request.GET and request.GET.get('form'):
+            print('1111111111111111111111', request.GET)
+
+
         else:
             return super(DataDel, self).get(request, *args, **kwargs)
 

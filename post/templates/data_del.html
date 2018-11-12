@@ -25,9 +25,23 @@
             <div class="col-md-4" align="center">{{ form.hg }}</div>
             <div class="col-md-4" align="center">{{ form.opis_name__opis_n }}</div>
             <div class="col-md-4" align="center">
+                <h3> {{ formm }}</h3>
+
                 <input type="submit" value="Выбрать">
             </div>
         </form>
     </div>
-    <h1>{{ formm }}</h1>
+
+    {#        <div>#}
+    {#        {% for formmm in formm %}#}
+    {#        <h1> <tr>{{ formmm.id }}</tr>#}
+    {#            <tr>{{ formmm.product_number }}</tr>#}
+    {#            <tr>{{ formmm.ser_name }}</tr>#}
+    {#            <tr>{{ formmm.data_invoice }}<tr>#}
+    {#        </h1>#}
+
+
+    {##}
+    {#    {% endfor %}#}
+    </div>
 {% endblock %}

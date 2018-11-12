@@ -58,4 +58,9 @@ class DataForm_doc(forms.ModelForm):
 # --------------------------------форма  удаления ---------------------------------------------------------------------------
 class SelectForma(forms.Form):
     """форма получает сет и во вьюшке, переопределен параметр choices"""
-    form = forms.ModelChoiceField(queryset=Post.objects.none())
+    form = forms.ModelMultipleChoiceField(
+        queryset=Post.objects.none(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label='Выберите удаляемые элементы',
+    )
