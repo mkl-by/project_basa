@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .models import Post, TechPost, DocPost, OpisPost, SerPost
 from django.views.generic.edit import CreateView
@@ -86,11 +87,11 @@ def VedomNal(request):
             order_by('doc_name__doc_n', 'tech_name__tech_n', 'opis_name__opis_n')
 
         if podstanovka[0] == 'doc_name__doc_n':
-            viborka = viborka.exclude(doc_name__doc_n=None)
+            viborka = viborka.exclude(doc_name__doc_n=None).filter(del_elem=True)
         elif podstanovka[0] == 'tech_name__tech_n':
-            viborka = viborka.exclude(tech_name__tech_n=None)
+            viborka = viborka.exclude(tech_name__tech_n=None).filter(del_elem=True)
         elif podstanovka[0] == 'opis_name__opis_n':
-            viborka = viborka.exclude(opis_name__opis_n=None)
+            viborka = viborka.exclude(opis_name__opis_n=None).filter(del_elem=True)
 
         for i in range(viborka.count()):
             qwe.append(list(viborka[i].values()))
@@ -161,35 +162,87 @@ class Form_input(TemplateView):
         return context
 
 
+# ------------------------------------------выбор чего удалять--------------------------------------------------
+def D_dell(request):
+    return render(request, 'd_dell.html')
 # -----------------------------------------удаление данных----------------------------------------------------
+
 class DataDel(TemplateView):
+
     template_name = 'data_del.html'
+    zapominalka = []
+
+    podstanovka = ['doc_name__doc_n', 'tech_name__tech_n', 'opis_name__opis_n']
+
+    def podst(self, pd, reques=None):
+
+        if int(pd) == 0:
+            pdd = self.podstanovka[0]
+            req = Post.objects.filter(doc_name__doc_n=reques, del_elem=True). \
+                values_list('ser_name__ser', 'product_number').order_by('ser_name__ser')
+
+        elif int(pd) == 1:
+            pdd = self.podstanovka[1]
+            req = Post.objects.filter(tech_name__tech_n=reques, del_elem=True). \
+                values_list('ser_name__ser', 'product_number').order_by('ser_name__ser')
+
+        elif int(pd) == 2:
+            pdd = self.podstanovka[2]
+            req = Post.objects.filter(opis_name__opis_n=reques, del_elem=True). \
+                values_list('ser_name__ser', 'product_number').order_by('ser_name__ser')
+        else:
+            pdd = None
+            req = None
+
+        otvet = [pdd, req]
+
+        return otvet
 
     def get(self, request, *args, **kwargs):
-        if request.GET and request.GET.get('element'):
-            print('--------------------------------', request.GET.get('element'))
-            sas = SelectForma()
 
-            sas.fields['form'].queryset = Post.objects.filter(tech_name__tech_n=request.GET['element'], del_elem=True). \
-                values_list('ser_name__ser', 'product_number').order_by('ser_name__ser')
+        if request.GET and request.GET.get('element') and int(kwargs['ide']) <= 2:
+
+            # if '# копать тута, !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! при втором рендеринге 0,1,2 теряются
+            pdd = self.podst(kwargs['ide'], request.GET['element'])
+            print('!!!!!!!!!!', pdd[1])
+
+            sas = SelectForma()
+            sas.fields['form'].queryset = pdd[1]
+
+            self.zapominalka.append(request.GET.get('element'))
 
             return render(request, 'data_del.html', {'formm': sas})
 
         elif request.GET and request.GET.get('form'):
-            print('1111111111111111111111', request.GET)
 
+            a = dict(request.GET)
+            for i in a['form']:
+                i = eval(i)
+
+                dell = Post.objects.filter(ser_name__ser=i[0], product_number=i[1],
+                                           tech_name__tech_n=self.zapominalka[0])
+
+                for ii in dell:
+                    if ii.del_elem == True:
+                        ii.del_elem = False
+                        ii.save()
+
+            self.zapominalka = []
+
+            return HttpResponse('<a href="/basa/data_del"> Данные удалены </a>')
 
         else:
+
             return super(DataDel, self).get(request, *args, **kwargs)
 
-
-
     def get_context_data(self, **kwargs):
+        print('-----------', (self.kwargs['ide']))
+        pdd = self.podst(kwargs['ide'])
         self.form = SelectForm(
-            choices=tuple(set([(x['tech_name__tech_n'], x['tech_name__tech_n']) for x in
-                               Post.objects.all().values('tech_name__tech_n')])))
+            choices=tuple(set([(x[pdd[0]], x[pdd[0]]) for x in Post.objects.all().values(pdd[0])])))
 
         context = super(DataDel, self).get_context_data(**kwargs)
+
         context['form'] = self.form
         return context
 

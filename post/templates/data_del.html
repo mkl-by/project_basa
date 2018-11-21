@@ -19,11 +19,11 @@
 
     <div class="row">
         {#        <form action="data_del/{{ form.element }}" method="POST">#}
-        <form action="{% url "datadel" %}" method="get">
+        <form action="{% url "datadel" ide=12 %}" method="get">
             {% csrf_token %}
             <div class="col-md-4" align="center">{{ form.element }}</div>
-            <div class="col-md-4" align="center">{{ form.hg }}</div>
-            <div class="col-md-4" align="center">{{ form.opis_name__opis_n }}</div>
+            <div class="col-md-4" align="center">{{ form.element1 }}</div>
+            <div class="col-md-4" align="center">{{ form.element0 }}</div>
             <div class="col-md-4" align="center">
                 <h3> {{ formm }}</h3>
 

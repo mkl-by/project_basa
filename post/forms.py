@@ -37,7 +37,6 @@ class SelectForm(forms.Form):
     """форма получает сет и во вьюшке, переопределен параметр choices"""
     element = forms.ChoiceField(label=" ", required=False)
 
-
     def __init__(self, *args, **kwargs):
         choices=kwargs.pop('choices')
         super(SelectForm, self).__init__(*args, **kwargs)
@@ -55,7 +54,7 @@ class DataForm_doc(forms.ModelForm):
         fields = ('product_number', 'invoice_number', 'data_invoice', 'whom')
 
 
-# --------------------------------форма  удаления ---------------------------------------------------------------------------
+# --------------------------------форма  удаления выбор select---------------------------------------------------------
 class SelectForma(forms.Form):
     """форма получает сет и во вьюшке, переопределен параметр choices"""
     form = forms.ModelMultipleChoiceField(
