@@ -174,40 +174,52 @@ class DataDel(TemplateView):
 
     podstanovka = ['doc_name__doc_n', 'tech_name__tech_n', 'opis_name__opis_n']
 
-    def podst(self, pd, reques=None):
-
+    def podst(self, pd):
+        """выбор удаляемого элемента, либо документы-0, наименование техники -1 , техническое описание-2"""
         if int(pd) == 0:
             pdd = self.podstanovka[0]
-            req = Post.objects.filter(doc_name__doc_n=reques, del_elem=True). \
-                values_list('ser_name__ser', 'product_number').order_by('ser_name__ser')
 
         elif int(pd) == 1:
             pdd = self.podstanovka[1]
-            req = Post.objects.filter(tech_name__tech_n=reques, del_elem=True). \
-                values_list('ser_name__ser', 'product_number').order_by('ser_name__ser')
 
         elif int(pd) == 2:
             pdd = self.podstanovka[2]
-            req = Post.objects.filter(opis_name__opis_n=reques, del_elem=True). \
-                values_list('ser_name__ser', 'product_number').order_by('ser_name__ser')
+
         else:
             pdd = None
-            req = None
 
-        otvet = [pdd, req]
-
+        otvet = [pdd, 1]
         return otvet
 
     def get(self, request, *args, **kwargs):
+        """рисуем форму удаления, и удаляем элементы"""
+        if request.GET and request.GET.get('element') and int(kwargs['ide']) == 7:
+            reques = request.GET.get('element')
 
-        if request.GET and request.GET.get('element') and int(kwargs['ide']) <= 2:
+            if Post.objects.filter(doc_name__doc_n=reques, del_elem=True) \
+                    .values_list('ser_name__ser', 'product_number').order_by('ser_name__ser'):
 
+                req = Post.objects.filter(doc_name__doc_n=reques, del_elem=True) \
+                    .values_list('ser_name__ser', 'product_number').order_by('ser_name__ser')
+
+            elif Post.objects.filter(tech_name__tech_n=reques, del_elem=True). \
+                    values_list('ser_name__ser', 'product_number').order_by('ser_name__ser'):
+
+                req = Post.objects.filter(tech_name__tech_n=reques, del_elem=True). \
+                    values_list('ser_name__ser', 'product_number').order_by('ser_name__ser')
+
+            elif Post.objects.filter(opis_name__opis_n=reques, del_elem=True). \
+                    values_list('ser_name__ser', 'product_number').order_by('ser_name__ser'):
+                req = Post.objects.filter(opis_name__opis_n=reques, del_elem=True). \
+                    values_list('ser_name__ser', 'product_number').order_by('ser_name__ser')
+
+            print('!!!!!!!!!!', kwargs['ide'], request.GET['element'], '-----')
             # if '# копать тута, !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! при втором рендеринге 0,1,2 теряются
-            pdd = self.podst(kwargs['ide'], request.GET['element'])
-            print('!!!!!!!!!!', pdd[1])
+            # pdd = self.podst(kwargs['ide'], request.GET['element'])
+            print('!!!!!!!!!!', req)
 
             sas = SelectForma()
-            sas.fields['form'].queryset = pdd[1]
+            sas.fields['form'].queryset = req
 
             self.zapominalka.append(request.GET.get('element'))
 

@@ -19,7 +19,7 @@
 
     <div class="row">
         {#        <form action="data_del/{{ form.element }}" method="POST">#}
-        <form action="{% url "datadel" ide=12 %}" method="get">
+        <form action="{% url "datadel" ide=7 %}" method="get">
             {% csrf_token %}
             <div class="col-md-4" align="center">{{ form.element }}</div>
             <div class="col-md-4" align="center">{{ form.element1 }}</div>
