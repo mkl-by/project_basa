@@ -1,11 +1,12 @@
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
-from .models import Post, TechPost, DocPost, OpisPost, SerPost
-from django.views.generic.edit import CreateView
-from django.views.generic.base import TemplateView, View, TemplateResponseMixin
-from django.views.generic.list import ListView
 from django.db.models import Count
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.views.generic.base import TemplateView
+
 from .forms import GoodForm, SelectForm, DataForm_doc, SelectForma
+from .models import Post, TechPost, DocPost, OpisPost, SerPost
+
+
 #------------------------вывод формы на главную страницу----------------------------------------------------------------
 def Boott(request):
     form = GoodForm()
@@ -213,10 +214,6 @@ class DataDel(TemplateView):
                 req = Post.objects.filter(opis_name__opis_n=reques, del_elem=True). \
                     values_list('ser_name__ser', 'product_number').order_by('ser_name__ser')
 
-            print('!!!!!!!!!!', kwargs['ide'], request.GET['element'], '-----')
-            # if '# копать тута, !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! при втором рендеринге 0,1,2 теряются
-            # pdd = self.podst(kwargs['ide'], request.GET['element'])
-            print('!!!!!!!!!!', req)
 
             sas = SelectForma()
             sas.fields['form'].queryset = req
@@ -248,7 +245,7 @@ class DataDel(TemplateView):
             return super(DataDel, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        print('-----------', (self.kwargs['ide']))
+        # print('-----------', (self.kwargs['ide']))
         pdd = self.podst(kwargs['ide'])
         self.form = SelectForm(
             choices=tuple(set([(x[pdd[0]], x[pdd[0]]) for x in Post.objects.all().values(pdd[0])])))
@@ -259,7 +256,43 @@ class DataDel(TemplateView):
         return context
 
 
+# ---------------------------функция фильтрования и отображения----------------------------------------------
 
+def Select_1(request):
+    LOCA = (('mn', 'Минск'),
+            ('br', 'Брест'),
+            ('gr', 'Гродно'),
+            ('go', 'Гомель'),
+            ('vi', 'Витебск'),
+            ('pi', 'Пинск')
+            )
+
+    dannie = []
+    a = dict(request.POST)
+    print(a)
+    ii = 0
+    for i in a['element']:
+
+        if i == '':  # если отсутствуют данные
+            i = 'данные отсутствуют'
+        print(i, '---', type(i))
+
+        if ii == 4:  # если необходимо подставить значение локации
+            for iss in LOCA:
+                if i in iss:
+                    i = iss[1]
+
+        dannie.append(i)
+        ii += 1
+
+    if ii < 7:  # в случае если данных не хватает заполняем данные отсутвуют
+        for iii in range(7 - ii):
+            dannie.append('данные отсутствуют')
+
+    dann = 'Серийный номер: {0[0]} \n Номер: {0[1]}\n Номер получения: {0[2]}\n Дата получения: {0[3]}\n Mестонахождение: {0[4]}\n ' \
+           'Номер отправления: {0[5]}\n Дата отправления: {0[6]}'.format(dannie)
+
+    return render(request, 'select1.html', {'dannie': dann})
 
 
         # print('aaaaaaaaaaaaaaa', request.POST['element'])

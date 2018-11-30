@@ -27,5 +27,6 @@ urlpatterns = [path('', views.Boott, name='boott'),
                # path('data_del/', views.DataDel.as_view(), name='datadel'),
 
                path('d_dell', views.D_dell, name='d_dell'),
+               path('select1', views.Select_1, name='select_1'),
 
                ]

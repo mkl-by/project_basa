@@ -14,17 +14,22 @@
 
 
 <div>
-    <form action="select" method="post">
+    <form action="select" method="post" align="center">
         {% csrf_token %}
-        <table>
+        <table align="center">
         {{ form }}
         </table>
-        <input type="submit" value="Выбрать" >
+        <input type="submit" value="Выбрать">
+
     </form>
 </div>
 
     <p></p>
+    <p></p>
+    <p></p>
+
     <div>
+
         <form action="data_input/0" method="get">
             <button type="submit" class="btn btn-primary btn-lg btn-block">Добавление данных</button>
         </form>
@@ -36,11 +41,7 @@
         </form>
     </div>
 
-     <div class="modal-footer">
 
-         <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-        <button type="button" class="btn btn-primary">Сохранить изменения</button>
-      </div>
 
 
 {% endblock %}
