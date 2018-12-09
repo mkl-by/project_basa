@@ -24,4 +24,5 @@ urlpatterns = [
     #path('home/', include('post.urls'))
     #path('', views.Bootton.as_view()),
     path('basa/', include('post.urls')),
+    # path('registration/', include('post.urls')),
 ]

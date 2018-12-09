@@ -1,7 +1,9 @@
 from django import forms
+from django.forms import models
+
 from .models import Post, DocPost
 from django.db.models import Count
-
+from django.contrib.auth.forms import UserCreationForm
 class GoodForm(forms.ModelForm):
 
 
@@ -63,3 +65,4 @@ class SelectForma(forms.Form):
         required=False,
         label='Выберите удаляемые элементы',
     )
+# --------------------------------------форма создания нового пользователя-----------------------------------------------

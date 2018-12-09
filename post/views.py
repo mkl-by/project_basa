@@ -1,12 +1,74 @@
+from django.contrib.auth.decorators import login_required
 from django.db.models import Count
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_protect
 from django.views.generic.base import TemplateView
-
+from django.contrib.auth.models import User
 from .forms import GoodForm, SelectForm, DataForm_doc, SelectForma
 from .models import Post, TechPost, DocPost, OpisPost, SerPost
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from django.views.generic.edit import FormView
 
 
+# ------------------------регистрация------------------------------------------------------------------------------------
+class RegisterFormView(FormView, ):
+    form_class = UserCreationForm
+    # Ссылка, на которую будет перенаправляться пользователь в случае успешной регистрации.
+    # указана ссылка на страницу входа для зарегистрированных пользователей.
+    success_url = "/basa/"
+
+    # Шаблон, который будет использоваться при отображении представления.
+    template_name = "registration_user.html"
+
+    def form_valid(self, form):
+        # Создаём пользователя, если данные в форму были введены корректно.
+        form.save()
+        # Получаем объект пользователя на основе введённых в форму данных.
+        self.username = form.cleaned_data.get('username')
+        self.my_password = form.cleaned_data.get('password1')
+        user = authenticate(username=self.username, password=self.my_password)
+        login(self.request, user)  # Выполняем аутентификацию пользователя.
+
+        # Вызываем метод базового класса
+        return super(RegisterFormView, self).form_valid(form)
+
+
+# -------------------------------------------Вход на сайт---------------------------------------------------------------
+from django.contrib.auth.forms import AuthenticationForm
+# Функция для установки сессионного ключа.
+# По нему django будет определять, выполнил ли вход пользователь.
+from django.contrib.auth import login, authenticate
+
+
+class LoginFormView(FormView):
+    form_class = AuthenticationForm
+
+    # Аналогично регистрации, только используем шаблон аутентификации.
+    template_name = "login.html"
+
+    # В случае успеха перенаправим на главную.
+    success_url = "/"
+
+    def form_valid(self, form):
+        # Получаем объект пользователя на основе введённых в форму данных.
+        self.user = form.get_user()
+
+        # Выполняем аутентификацию пользователя.
+        login(self.request, self.user)
+        return super(LoginFormView, self).form_valid(form)
+
+    from django.views.generic.base import View
+
+    class LogoutView(View):
+
+        def get(self, request):
+            from django.contrib.auth import logout
+            # Выполняем выход для пользователя, запросившего данное представление.
+            logout(request)
+            # После чего, перенаправляем пользователя на главную страницу.
+            return HttpResponseRedirect("/")
 #------------------------вывод формы на главную страницу----------------------------------------------------------------
 def Boott(request):
     form = GoodForm()
@@ -88,14 +150,15 @@ def VedomNal(request):
             order_by('doc_name__doc_n', 'tech_name__tech_n', 'opis_name__opis_n')
 
         if podstanovka[0] == 'doc_name__doc_n':
-            viborka = viborka.exclude(doc_name__doc_n=None).filter(del_elem=True)
+            viborka = viborka.exclude(doc_name__doc_n=None).filter(del_elem=True).order_by('doc_name__doc_n')
         elif podstanovka[0] == 'tech_name__tech_n':
-            viborka = viborka.exclude(tech_name__tech_n=None).filter(del_elem=True)
+            viborka = viborka.exclude(tech_name__tech_n=None).filter(del_elem=True).order_by('tech_name__tech_n')
         elif podstanovka[0] == 'opis_name__opis_n':
-            viborka = viborka.exclude(opis_name__opis_n=None).filter(del_elem=True)
+            viborka = viborka.exclude(opis_name__opis_n=None).filter(del_elem=True).order_by('opis_name__opis_n')
 
         for i in range(viborka.count()):
             qwe.append(list(viborka[i].values()))
+
 
     data = Krasiv_vivod(qwe)
 
@@ -117,8 +180,10 @@ class Form_input(TemplateView):
     #data=dat.strftime("%Y-%m-%d")
     template_name = 'form_input.html'
 
-
     def get(self, request, *args, **kwargs):
+
+        if not (request.user.is_authenticated and request.user.is_staff):  # в случае если не авторизован
+            return HttpResponse('<a href="/basa/"> Вы не авторизованы </a>')
 
         if request.method == 'GET' and request.GET.get('product_number', False):
             poss = Post()
@@ -153,6 +218,7 @@ class Form_input(TemplateView):
         return super(Form_input, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
+
         self.form = DataForm_doc(initial={'doc_n': 'наименование документа',
                                           'ser': 'серийный номер',
                                           'product_number': 'номер документа',
@@ -194,6 +260,10 @@ class DataDel(TemplateView):
 
     def get(self, request, *args, **kwargs):
         """рисуем форму удаления, и удаляем элементы"""
+
+        if not (request.user.is_authenticated and request.user.is_staff):  # в случае если не авторизован
+            return HttpResponse('<a href="/basa/"> Вы не авторизованы </a>')
+
         if request.GET and request.GET.get('element') and int(kwargs['ide']) == 7:
             reques = request.GET.get('element')
 
