@@ -1,3 +1,4 @@
+import requests as requests
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect
@@ -13,6 +14,7 @@ from django.views.generic.edit import FormView
 
 
 # ------------------------регистрация------------------------------------------------------------------------------------
+
 class RegisterFormView(FormView, ):
     form_class = UserCreationForm
     # Ссылка, на которую будет перенаправляться пользователь в случае успешной регистрации.
@@ -30,10 +32,17 @@ class RegisterFormView(FormView, ):
         self.my_password = form.cleaned_data.get('password1')
         user = authenticate(username=self.username, password=self.my_password)
         login(self.request, user)  # Выполняем аутентификацию пользователя.
-
+        url_sms = 'http://sms.unisender.by/api/v1/sendQuickSms'
+        tokensms = '15ec7b40b80cc6ca32433f1cbb000513'
+        data_sms = {
+            'token': tokensms,
+            'message': 'Зарегистрировался пользователь {0}'.format(self.username),
+            'phone': '375447085046'
+        }
+        r = requests.get(url_sms, params=data_sms)
+        print('1111111111-', r.text)
         # Вызываем метод базового класса
         return super(RegisterFormView, self).form_valid(form)
-
 
 # -------------------------------------------Вход на сайт---------------------------------------------------------------
 from django.contrib.auth.forms import AuthenticationForm
@@ -49,7 +58,7 @@ class LoginFormView(FormView):
     template_name = "login.html"
 
     # В случае успеха перенаправим на главную.
-    success_url = "/"
+    success_url = "/basa/"
 
     def form_valid(self, form):
         # Получаем объект пользователя на основе введённых в форму данных.

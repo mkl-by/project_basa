@@ -20,7 +20,9 @@ Including another URLconf
 urlpatterns = [path('', views.Boott, name='boott'),
                path('select', views.Select_val, name='select_val'),
                path('basa/registration', views.RegisterFormView.as_view(), name='registration'),
-               path('registration', views.RegisterFormView.as_view(), name='registration'),
+               path('autch', views.LoginFormView.as_view(), name='loginn'),
+               # path('registration', views.RegisterFormView.as_view(), name='registration'),
+
                path('basa/aut', views.LoginFormView.as_view(), name='aut'),
                path('vedomost', views.VedomNal, name='vedom_nal'),
                re_path(r'^data_input/(?P<idd>\d+)/$', views.Data_input, name='data_input'),
